@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Line } from 'react-chartjs-2';
 import { Col, Row, Typography } from 'antd';
 // Import required parts of Chart.js
@@ -27,6 +27,9 @@ ChartJS.register(
 const LineChart = ({ coinHistory, currentPrice, coinName }) => {
   const coinPrice = [];
   const coinTimestamp = [];
+  useEffect(() => {
+    console.log('New coinHistory data:', coinHistory); // Log to ensure data is changing
+  }, [coinHistory]);
 
   for (let i = 0; i < coinHistory?.data?.history?.length; i += 1) {
     coinPrice.push(coinHistory?.data?.history[i].price);
@@ -34,7 +37,7 @@ const LineChart = ({ coinHistory, currentPrice, coinName }) => {
 
   for (let i = 0; i < coinHistory?.data?.history?.length; i += 1) {
     
-    coinTimestamp.push(new Date(coinHistory?.data?.history[i].timestamp).toLocaleDateString());
+    coinTimestamp.push(new Date(coinHistory?.data?.history[i].timestamp*1000).toLocaleDateString());
   }
   const data = {
     labels: coinTimestamp,
@@ -51,13 +54,17 @@ const LineChart = ({ coinHistory, currentPrice, coinName }) => {
 
   const options = {
     scales: {
-        y: [
-        {
-          ticks: {
-            beginAtZero: true,
-          },
+      x: {
+        type: 'category', // Explicitly mention the scale type for x-axis
+        ticks: {
+          maxTicksLimit: 10, // Limit the number of ticks shown on the x-axis
         },
-      ],
+      },
+      y: {
+        ticks: {
+          beginAtZero: true,
+        },
+      },
     },
   };
 
